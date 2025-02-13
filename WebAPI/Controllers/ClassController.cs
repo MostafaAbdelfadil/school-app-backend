@@ -85,9 +85,26 @@ namespace WebAPI.Controllers
             {
                 ClassName = addClassDto.ClassName
             }; 
-            _dbSchool.Set<Class>().Add(newClass);
-            _dbSchool.SaveChanges();
-            return Ok(newClass);
+            
+
+            try
+            {
+                _dbSchool.Set<Class>().Add(newClass);
+                _dbSchool.SaveChanges();
+                return Ok(newClass);
+            }
+            catch (DbUpdateException ex)
+            {
+                /*if (ex.InnerException?.Message.Contains("UNIQUE") == true)
+                {
+                    return BadRequest(new {message= "Email or Phone number already exists." });
+                }*/
+                return StatusCode(500, new { message = "An error occurred while adding the class." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpPut]
@@ -100,9 +117,26 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
             updatedClass.ClassName = updateClassDto.ClassName;
-            _dbSchool.Set<Class>().Update(updatedClass);
-            _dbSchool.SaveChanges();
-            return Ok(updatedClass);
+            
+
+            try
+            {
+                _dbSchool.Set<Class>().Update(updatedClass);
+                _dbSchool.SaveChanges();
+                return Ok(updatedClass);
+            }
+            catch (DbUpdateException ex)
+            {
+                /*if (ex.InnerException?.Message.Contains("UNIQUE") == true)
+                {
+                    return BadRequest(new {message= "Email or Phone number already exists." });
+                }*/
+                return StatusCode(500, new { message = "An error occurred while updating the class." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpDelete]
@@ -115,9 +149,28 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
             
-            _dbSchool.Set<Class>().Remove(deletedClass);
-            _dbSchool.SaveChanges();
-            return Ok();
+            
+
+            try
+            {
+                _dbSchool.Set<Class>().Remove(deletedClass);
+                _dbSchool.SaveChanges();
+                return Ok();
+            }
+            catch (DbUpdateException ex)
+            {
+                /*if (ex.InnerException?.Message.Contains("UNIQUE") == true)
+                {
+                    return BadRequest(new {message= "Email or Phone number already exists." });
+                }*/
+                return StatusCode(500, new { message = "An error occurred while deleting the class." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+
+
         }
 
     }

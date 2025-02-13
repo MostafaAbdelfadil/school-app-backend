@@ -153,9 +153,26 @@ namespace WebAPI.Controllers
                     .FirstOrDefault();
             }
 
-            _dbSchool.Set<Student>().Update(updatedStudent);
-            _dbSchool.SaveChanges();
-            return Ok(updatedStudent);
+            
+
+            try
+            {
+                _dbSchool.Set<Student>().Update(updatedStudent);
+                _dbSchool.SaveChanges();
+                return Ok(updatedStudent);
+            }
+            catch (DbUpdateException ex)
+            {
+                /*if (ex.InnerException?.Message.Contains("UNIQUE") == true)
+                {
+                    return BadRequest(new {message= "Email or Phone number already exists." });
+                }*/
+                return StatusCode(500, new { message = "An error occurred while updating the student." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpDelete]
@@ -168,9 +185,26 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
             
-            _dbSchool.Set<Student>().Remove(deletedStudent);
-            _dbSchool.SaveChanges();
-            return Ok();
+            
+
+            try
+            {
+                _dbSchool.Set<Student>().Remove(deletedStudent);
+                _dbSchool.SaveChanges();
+                return Ok();
+            }
+            catch (DbUpdateException ex)
+            {
+                /*if (ex.InnerException?.Message.Contains("UNIQUE") == true)
+                {
+                    return BadRequest(new {message= "Email or Phone number already exists." });
+                }*/
+                return StatusCode(500, new { message = "An error occurred while deleting the student." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
     }

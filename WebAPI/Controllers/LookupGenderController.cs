@@ -87,9 +87,26 @@ namespace WebAPI.Controllers
                 GenderId = addLookupGenderDto.GenderId,
                 GenderName = addLookupGenderDto.GenderName
             }; 
-            _dbSchool.Set<LookupGender>().Add(newLookupGender);
-            _dbSchool.SaveChanges();
-            return Ok(newLookupGender);
+            
+
+            try
+            {
+                _dbSchool.Set<LookupGender>().Add(newLookupGender);
+                _dbSchool.SaveChanges();
+                return Ok(newLookupGender);
+            }
+            catch (DbUpdateException ex)
+            {
+                /*if (ex.InnerException?.Message.Contains("UNIQUE") == true)
+                {
+                    return BadRequest(new {message= "Email or Phone number already exists." });
+                }*/
+                return StatusCode(500, new { message = "An error occurred while adding the gender." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpPut]
@@ -103,9 +120,26 @@ namespace WebAPI.Controllers
             }
             updatedLookupGender.GenderId = updateLookupGenderDto.GenderId;
             updatedLookupGender.GenderName = updateLookupGenderDto.GenderName;
-            _dbSchool.Set<LookupGender>().Update(updatedLookupGender);
-            _dbSchool.SaveChanges();
-            return Ok(updatedLookupGender);
+
+            
+            try
+            {
+                _dbSchool.Set<LookupGender>().Update(updatedLookupGender);
+                _dbSchool.SaveChanges();
+                return Ok(updatedLookupGender);
+            }
+            catch (DbUpdateException ex)
+            {
+                /*if (ex.InnerException?.Message.Contains("UNIQUE") == true)
+                {
+                    return BadRequest(new {message= "Email or Phone number already exists." });
+                }*/
+                return StatusCode(500, new { message = "An error occurred while updating the gender." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpDelete]
@@ -118,9 +152,25 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
             
-            _dbSchool.Set<LookupGender>().Remove(deletedLookupGender);
-            _dbSchool.SaveChanges();
-            return Ok();
+            
+            try
+            {
+                _dbSchool.Set<LookupGender>().Remove(deletedLookupGender);
+                _dbSchool.SaveChanges();
+                return Ok();
+            }
+            catch (DbUpdateException ex)
+            {
+                /*if (ex.InnerException?.Message.Contains("UNIQUE") == true)
+                {
+                    return BadRequest(new {message= "Email or Phone number already exists." });
+                }*/
+                return StatusCode(500, new { message = "An error occurred while deleting the gender." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
     }

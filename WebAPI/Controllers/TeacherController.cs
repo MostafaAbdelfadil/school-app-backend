@@ -83,9 +83,26 @@ namespace WebAPI.Controllers
                     .FirstOrDefault();
             }
 
-            _dbSchool.Set<Teacher>().Add(newTeacher);
-            _dbSchool.SaveChanges();
-            return Ok(newTeacher);
+            
+
+            try
+            {
+                _dbSchool.Set<Teacher>().Add(newTeacher);
+                _dbSchool.SaveChanges();
+                return Ok(newTeacher);
+            }
+            catch (DbUpdateException ex)
+            {
+                /*if (ex.InnerException?.Message.Contains("UNIQUE") == true)
+                {
+                    return BadRequest(new {message= "Email or Phone number already exists." });
+                }*/
+                return StatusCode(500, new { message = "An error occurred while adding the teacher." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpPut]
@@ -116,9 +133,26 @@ namespace WebAPI.Controllers
                     .FirstOrDefault();
             }
 
-            _dbSchool.Set<Teacher>().Update(updatedTeacher);
-            _dbSchool.SaveChanges();
-            return Ok(updatedTeacher);
+           
+
+            try
+            {
+                _dbSchool.Set<Teacher>().Update(updatedTeacher);
+                _dbSchool.SaveChanges();
+                return Ok(updatedTeacher);
+            }
+            catch (DbUpdateException ex)
+            {
+                /*if (ex.InnerException?.Message.Contains("UNIQUE") == true)
+                {
+                    return BadRequest(new {message= "Email or Phone number already exists." });
+                }*/
+                return StatusCode(500, new { message = "An error occurred while updating the teacher." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpDelete]
@@ -131,9 +165,26 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
             
-            _dbSchool.Set<Teacher>().Remove(deletedTeacher);
-            _dbSchool.SaveChanges();
-            return Ok();
+            
+
+            try
+            {
+                _dbSchool.Set<Teacher>().Remove(deletedTeacher);
+                _dbSchool.SaveChanges();
+                return Ok();
+            }
+            catch (DbUpdateException ex)
+            {
+                /*if (ex.InnerException?.Message.Contains("UNIQUE") == true)
+                {
+                    return BadRequest(new {message= "Email or Phone number already exists." });
+                }*/
+                return StatusCode(500, new { message = "An error occurred while deleting the teacher." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
     }

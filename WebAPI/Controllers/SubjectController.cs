@@ -87,9 +87,26 @@ namespace WebAPI.Controllers
                 Description = addSubjectDto.Description
             };
             
-            _dbSchool.Set<Subject>().Add(newSubject);
-            _dbSchool.SaveChanges();
-            return Ok(newSubject);
+            
+
+            try
+            {
+                _dbSchool.Set<Subject>().Add(newSubject);
+                _dbSchool.SaveChanges();
+                return Ok(newSubject);
+            }
+            catch (DbUpdateException ex)
+            {
+                /*if (ex.InnerException?.Message.Contains("UNIQUE") == true)
+                {
+                    return BadRequest(new {message= "Email or Phone number already exists." });
+                }*/
+                return StatusCode(500, new { message = "An error occurred while adding the subject." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpPut]
@@ -104,9 +121,26 @@ namespace WebAPI.Controllers
             updatedSubject.SubjectName = updateSubjectDto.SubjectName;
             updatedSubject.Description = updateSubjectDto.Description;
 
-            _dbSchool.Set<Subject>().Update(updatedSubject);
-            _dbSchool.SaveChanges();
-            return Ok(updatedSubject);
+            
+
+            try
+            {
+                _dbSchool.Set<Subject>().Update(updatedSubject);
+                _dbSchool.SaveChanges();
+                return Ok(updatedSubject);
+            }
+            catch (DbUpdateException ex)
+            {
+                /*if (ex.InnerException?.Message.Contains("UNIQUE") == true)
+                {
+                    return BadRequest(new {message= "Email or Phone number already exists." });
+                }*/
+                return StatusCode(500, new { message = "An error occurred while updating the subject." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpDelete]
@@ -119,9 +153,26 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
             
-            _dbSchool.Set<Subject>().Remove(deletedSubject);
-            _dbSchool.SaveChanges();
-            return Ok();
+            
+
+            try
+            {
+                _dbSchool.Set<Subject>().Remove(deletedSubject);
+                _dbSchool.SaveChanges();
+                return Ok();
+            }
+            catch (DbUpdateException ex)
+            {
+                /*if (ex.InnerException?.Message.Contains("UNIQUE") == true)
+                {
+                    return BadRequest(new {message= "Email or Phone number already exists." });
+                }*/
+                return StatusCode(500, new { message = "An error occurred while deleting the subject." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
     }
